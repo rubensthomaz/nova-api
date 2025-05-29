@@ -24,7 +24,8 @@ def responder():
             temperature=0.7,
         )
         conteudo = resp.choices[0].message.content.strip()
-    except Exception:
+    except Exception as e:
+        print("Erro ao chamar OpenAI:", str(e))  # ← Adiciona isso aqui!
         conteudo = "Poxa, tive um problema interno. Tenta de novo mais tarde!"
 
     return jsonify({"resposta": conteudo})
