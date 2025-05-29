@@ -1,26 +1,23 @@
 from flask import Flask, request, jsonify
-import random
+from datetime import datetime
 
 app = Flask(__name__)
 
-# Simulação de respostas como seu arquivo JSON local
-respostas = {
-    "oi": ["Oi, tudo bem?", "E aí, uai!", "Oi sô! Como posso ajudar?"],
-    "como você está?": ["Tô bão demais da conta!", "Tô aqui firme e forte!"],
-    "qual seu nome?": ["Eu sou a Nova, uai!", "Me chamo Nova, sua assistente mineira."],
-}
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"mensagem": "Fale comigo!"})
 
-@app.route("/nova", methods=["POST"])
-def conversar():
+@app.route("/responder", methods=["POST"])
+def responder():
     dados = request.get_json()
     mensagem = dados.get("mensagem", "").lower()
 
-    if mensagem in respostas:
-        resposta = random.choice(respostas[mensagem])
-    else:
-        resposta = "Ainda tô aprendendo isso, mas quero muito te entender."
+    if "dia" in mensagem:
+        hoje = datetime.now().strftime("%A, %d de %B de %Y")
+        return jsonify({"resposta": f"Hoje é {hoje}."})
 
-    return jsonify({"resposta": resposta})
+    if "hora" in mensagem:
+        hora = datetime.now().strftime("%H:%M")
+        return jsonify({"resposta": f"Agora são {hora}."})
 
-if __name__ == "__main__":
-    app.run()
+    return jsonify({"resposta": "Ainda estou aprendendo isso, mas quero muito te entender."})
